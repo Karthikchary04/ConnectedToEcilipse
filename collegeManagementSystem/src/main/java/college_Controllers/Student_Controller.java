@@ -45,7 +45,7 @@ public class Student_Controller extends HttpServlet
     		s.setSid(Integer.parseInt(session.getAttribute("id").toString()));
     		al=cc.checkFeeRemainders(s);
     		req.setAttribute("myfeeremainder", al);
-    		RequestDispatcher rd=req.getRequestDispatcher("StudentFeeRemainder.jsp");
+    		RequestDispatcher rd=req.getRequestDispatcher("AlliNOne.jsp");
     		rd.forward(req, res);
     	}
     	else if(path.equals("/feepayment"))
@@ -54,7 +54,7 @@ public class Student_Controller extends HttpServlet
     		ArrayList<Fee_Remainder_Model> al=new ArrayList<Fee_Remainder_Model>();
     		al=cc.feePaymentForm(f);
     		req.setAttribute("paymentform", al);
-    		RequestDispatcher rd=req.getRequestDispatcher("StuedntPaymentForm.jsp");
+    		RequestDispatcher rd=req.getRequestDispatcher("AlliNOne.jsp");
     		rd.forward(req, res);
     	}
     	else if(path.equals("/payment"))
@@ -81,7 +81,7 @@ public class Student_Controller extends HttpServlet
     		s.setSid(Integer.parseInt(session.getAttribute("id").toString()));
     		al=cc.checkMyResult(s);
     		req.setAttribute("mymarks",al);
-    		RequestDispatcher rd=req.getRequestDispatcher("StudentMyMarks.jsp");
+    		RequestDispatcher rd=req.getRequestDispatcher("AlliNOne.jsp");
     		rd.forward(req, res);
     	}
     	else if(path.equals("/myfeesturcture"))
@@ -91,7 +91,7 @@ public class Student_Controller extends HttpServlet
     		s.setSid(Integer.parseInt(session.getAttribute("id").toString()));
     		al=cc.checkMyFeeStructure(s);
     		req.setAttribute("myfeestructure",al);
-    		RequestDispatcher rd=req.getRequestDispatcher("StudentMyFeeStructure.jsp");
+    		RequestDispatcher rd=req.getRequestDispatcher("AlliNOne.jsp");
     		rd.forward(req, res);
     	}
     	else if(path.equals("/studentlogout"))

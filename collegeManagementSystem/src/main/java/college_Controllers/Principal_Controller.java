@@ -61,7 +61,7 @@ public class Principal_Controller extends HttpServlet
     		ArrayList<Lecturer_Model> al=new ArrayList<Lecturer_Model>();
     		al=cc.viewlecturers();
     		req.setAttribute("lecturers",al);
-    		RequestDispatcher rd=req.getRequestDispatcher("ViewLecturers.jsp");
+    		RequestDispatcher rd=req.getRequestDispatcher("AlliNOne.jsp");
     		rd.forward(req, res);
     	}
     	else if(path.equals("/viewreciptions"))
@@ -69,7 +69,7 @@ public class Principal_Controller extends HttpServlet
     		ArrayList<Recption_Model> al=new ArrayList<Recption_Model>();
     		al=cc.viewRecptionist();
     		req.setAttribute("reciptionist",al);
-    		RequestDispatcher rd=req.getRequestDispatcher("ViewReciptionists.jsp");
+    		RequestDispatcher rd=req.getRequestDispatcher("AlliNOne.jsp");
     		rd.forward(req, res);
     	}
     	else if(path.equals("/viewcources"))
@@ -77,7 +77,7 @@ public class Principal_Controller extends HttpServlet
     		ArrayList<Course_Model> al=new ArrayList<Course_Model>();
     		al=cc.viewCources();
     		req.setAttribute("cources",al);
-    		RequestDispatcher rd=req.getRequestDispatcher("ViewCources.jsp");
+    		RequestDispatcher rd=req.getRequestDispatcher("AlliNOne.jsp");
     		rd.forward(req, res);
     	}
     	else if(path.equals("/ViewStudents"))
@@ -85,7 +85,7 @@ public class Principal_Controller extends HttpServlet
     		ArrayList<Student_Model> al=new ArrayList<Student_Model>();
     		al=cc.viewAllStudents();
     		req.setAttribute("students",al);
-    		RequestDispatcher rd=req.getRequestDispatcher("ViewAllStudents.jsp");
+    		RequestDispatcher rd=req.getRequestDispatcher("AlliNOne.jsp");
     		rd.forward(req, res);
     	}
     	else if(path.equals("/principallogout"))

@@ -64,7 +64,7 @@ public class Reciption_Controller extends HttpServlet
     		ArrayList<Student_Model> al=new ArrayList<Student_Model>();
     		al=cc.viewAllStudents();
     		req.setAttribute("reciptionistviewallstudents", al);
-    		RequestDispatcher rd=req.getRequestDispatcher("ReciptionistViewAllStudents.jsp");
+    		RequestDispatcher rd=req.getRequestDispatcher("AlliNOne.jsp");
      	    rd.forward(req,res);
     	}
     	else if(path.equals("/feeremainder"))
@@ -85,7 +85,7 @@ public class Reciption_Controller extends HttpServlet
     		ArrayList<Course_Model> al=new ArrayList<Course_Model>();
     		al=cc.viewCources();
     		req.setAttribute("reciptionistviewcources",al);
-    		RequestDispatcher rd=req.getRequestDispatcher("ReciptionistViewCources.jsp");
+    		RequestDispatcher rd=req.getRequestDispatcher("AlliNOne.jsp");
     		rd.forward(req, res);
     	}
     	else if(path.equals("/viewstudentsbycourse"))
@@ -94,7 +94,7 @@ public class Reciption_Controller extends HttpServlet
     		ArrayList<Student_Model> al=new ArrayList<Student_Model>();
     		al=cc.checkStudentsByCourse(c);
     		req.setAttribute("reciptionistviewstudentsbycourse", al);
-    		RequestDispatcher rd=req.getRequestDispatcher("ReciptionistViewStudentsByCourse.jsp");
+    		RequestDispatcher rd=req.getRequestDispatcher("AlliNOne.jsp");
      	    rd.forward(req,res);
     	}
     	else if(path.equals("/reciptionistlogout"))

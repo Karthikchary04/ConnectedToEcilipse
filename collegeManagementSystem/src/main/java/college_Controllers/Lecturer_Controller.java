@@ -51,7 +51,7 @@ public class Lecturer_Controller extends HttpServlet
     		l.setUsername((session.getAttribute("id").toString()));
     		al=cc.checkMyStudents(l);
     		req.setAttribute("mystudents",al);
-    		RequestDispatcher rd=req.getRequestDispatcher("LecturerViewStudents.jsp");
+    		RequestDispatcher rd=req.getRequestDispatcher("AlliNOne.jsp");
     		rd.forward(req, res);
     	}
     	else if(path.equals("/totalmarks"))
@@ -60,7 +60,7 @@ public class Lecturer_Controller extends HttpServlet
     		ArrayList<Marks_Model> al=new ArrayList<Marks_Model>();
     		al=cc.enterTotalMarksOfStudent(m);
     		req.setAttribute("totalmarks",al);
-    		RequestDispatcher rd=req.getRequestDispatcher("LecturerTotalMarks.jsp");
+    		RequestDispatcher rd=req.getRequestDispatcher("AlliNOne.jsp");
     		rd.forward(req, res);
     	}
     	else if(path.equals("/updateTotalMarks"))
@@ -87,7 +87,7 @@ public class Lecturer_Controller extends HttpServlet
     		l.setUsername((session.getAttribute("id").toString()));
     		al=cc.checkMarksOfStudents(l);
     		req.setAttribute("mystudentsmarks",al);
-    		RequestDispatcher rd=req.getRequestDispatcher("LecturerMyStudentsMarks.jsp");
+    		RequestDispatcher rd=req.getRequestDispatcher("AlliNOne.jsp");
     		rd.forward(req, res);
     	}
     	else if(path.equals("/lecturerlogout"))

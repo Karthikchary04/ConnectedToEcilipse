@@ -21,11 +21,11 @@ import Models.Admin_Model;
 import Models.Orders_Model;
 import Models.Product_Model;
 
-@WebServlet(urlPatterns = {"/AdminLogin","/adminloginform","/AdminForgetPassword","/addproductsform","/AddProductDetails","/adminoptions","/ViewAllProducts","/updateform","/UpdateProductDetails","/DeleteProduct","/ViewOrdersList"})
-public class Econtroller extends HttpServlet
+@WebServlet(urlPatterns = {"/AdminLogin","/adminloginform","/AdminForgetPassword","/addproductsform","/AddProductDetails","/adminoptions","/ViewAllProducts","/updateform","/UpdateProductDetails","/DeleteProduct","/ViewOrdersList","/getproducts","/searchproductspage"})
+public class Admin_Econtroller extends HttpServlet
 {
 	EDao e;
-	public final String siteImages="D://SiteImages";
+	public final String cloud="D://cloud";
 	public void init() throws ServletException
 	{
 		super.init();
@@ -48,6 +48,11 @@ public class Econtroller extends HttpServlet
     	else if(path.equals("/adminoptions"))
     	{
     		RequestDispatcher rd=req.getRequestDispatcher("AdminWelcomepage.jsp");
+    		rd.forward(req, res);
+    	}
+    	else if(path.equals("/searchproductspage"))
+    	{
+    		RequestDispatcher rd=req.getRequestDispatcher("SearchProducts.jsp");
     		rd.forward(req, res);
     	}
     	else if(path.equals("/ViewAllProducts"))
@@ -93,12 +98,34 @@ public class Econtroller extends HttpServlet
     		{
     			req.setAttribute("orderslist",al);
     			RequestDispatcher rd=req.getRequestDispatcher("AllInOne.jsp");
-    			rd.forward(req, res);
+    			rd.include(req, res);
     		}
     		else
     		{
     			req.setAttribute("msg","No Orders From Customers");
     			RequestDispatcher rd=req.getRequestDispatcher("AllInOne.jsp");
+    			rd.forward(req, res);
+    		}
+    	}
+    	else if(path.equals("/getproducts"))
+    	{
+    		p.setProductName(req.getParameter("search"));
+    		p.setBrand(req.getParameter("search"));
+    		ArrayList<Product_Model> al=new ArrayList<Product_Model>();
+    		al=e.getSearchResult(p);
+    		req.setAttribute("searchresult", al);
+    		if(al!=null)
+    		{
+    			File f=new File("D://cloud");
+    			File arr[]=f.listFiles();
+    			req.setAttribute("productimages",arr);
+    			RequestDispatcher rd=req.getRequestDispatcher("SearchProducts.jsp");
+    			rd.forward(req, res);
+    		}
+    		else
+    		{
+    			req.setAttribute("msg","NO Products Available");
+    			RequestDispatcher rd=req.getRequestDispatcher("SearchProducts.jsp");
     			rd.forward(req, res);
     		}
     	}
@@ -155,7 +182,7 @@ public class Econtroller extends HttpServlet
     					if(!item.isFormField())
     					{
     						p.setImage(new File(item.getName()).getName());
-    						item.write(new File(siteImages+File.pathSeparator+p.getImage()));
+    						item.write(new File(cloud+File.separator+p.getImage()));
     					}
     					else
     					{
@@ -226,7 +253,7 @@ public class Econtroller extends HttpServlet
     					if(!item.isFormField())
     					{
     						p.setImage(new File(item.getName()).getName());
-    						item.write(new File(siteImages+File.pathSeparator+p.getImage()));
+    						item.write(new File(cloud+File.pathSeparator+p.getImage()));
     					}
     					else
     					{

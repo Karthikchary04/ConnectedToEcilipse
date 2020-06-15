@@ -69,7 +69,7 @@ nav .start-Delete-Product , a:nth-child(4):hover~ .animation
 	left:600px;
 }
 a:nth-child(5){width:200px;} 
-nav .start-Delete-Product , a:nth-child(5):hover~ .animation 
+nav .start-Check-sales , a:nth-child(5):hover~ .animation 
 {
 	width:200px;
 	left:800px;
@@ -87,9 +87,9 @@ nav .start-Search , a:nth-child(6):hover~ .animation
             <a href=addproductsform>Add Products</a>
             <a href=#>View Products</a>
             <a href=#>Update Product</a>
-            <a href=#>Delete Product</a>
+            <a href=#>Check Sales</a>
             <a href=#>Manage Orders</a>
-            <a href=#>Search</a>
+            <a href=searchproductspage>Search</a>
             <div class="animation start-home"></div>
          </nav>     
 </body>

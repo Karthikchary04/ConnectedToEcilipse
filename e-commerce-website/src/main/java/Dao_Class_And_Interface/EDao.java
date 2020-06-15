@@ -20,6 +20,7 @@ public class EDao implements eCommerce_Interface
 		Configuration cfg=new Configuration().configure().addAnnotatedClass(Admin_Model.class);
 		sf=cfg.buildSessionFactory();
 	}
+	//Admin Modules
 	public boolean adminLogin(Admin_Model a)
 	{
 		boolean b=false;
@@ -98,6 +99,14 @@ public class EDao implements eCommerce_Interface
 		ArrayList<Orders_Model> al=new ArrayList<Orders_Model>();
 		Session s=sf.openSession();
 		al=(ArrayList<Orders_Model>) s.createQuery("from Orders_Model").list();
+		return al;
+	}
+	public ArrayList<Product_Model> getSearchResult(Product_Model p)
+	{
+		ArrayList<Product_Model> al=new ArrayList<Product_Model>();
+		Session s=sf.openSession();
+		al=(ArrayList<Product_Model>) s.createQuery("from Product_Model where productName like '%"+p.getProductName()+"%' or brand like '%"+p.getBrand()+"%'").list();
+		s.close();
 		return al;
 	}
 

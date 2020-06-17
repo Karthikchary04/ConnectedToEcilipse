@@ -16,6 +16,7 @@
             <property name="hbm2ddl.auto">update</property>
             <mapping class="Models.Admin_Model"/>
             <mapping class="Models.Product_Model"/>
+            <mapping class="Models.User_Model"/>
             
     </session-factory>
 

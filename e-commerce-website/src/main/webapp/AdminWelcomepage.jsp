@@ -1,9 +1,6 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="ISO-8859-1">
 <title>Admin Welcome Page</title>
 <style type="text/css">
 body
@@ -15,7 +12,7 @@ nav
 {
    position: relative;
    margin: 100px auto 0;
-   width: 1100px;
+   width: 930px;
    height: 50px;
    background: #34495e;
    border-radius: 8px;
@@ -57,28 +54,22 @@ nav .start-View-Products , a:nth-child(2):hover~ .animation
 	left:200px;
 }
 a:nth-child(3){width:200px;} 
-nav .start-Update-Product , a:nth-child(3):hover~ .animation 
+nav .start-Check-Sales , a:nth-child(3):hover~ .animation 
 {
 	width:200px;
 	left:400px;
 }
 a:nth-child(4){width:200px;} 
-nav .start-Delete-Product , a:nth-child(4):hover~ .animation 
+nav .start-Manage-Orders , a:nth-child(4):hover~ .animation 
 {
 	width:200px;
 	left:600px;
 }
-a:nth-child(5){width:200px;} 
-nav .start-Check-sales , a:nth-child(5):hover~ .animation 
+a:nth-child(5){width:100px;} 
+nav .start-Search , a:nth-child(5):hover~ .animation 
 {
-	width:200px;
+	width:130px;
 	left:800px;
-}
-a:nth-child(6){width:100px;} 
-nav .start-Search , a:nth-child(6):hover~ .animation 
-{
-	width:100px;
-	left:1000px;
 }
 </style>
 </head>
@@ -86,7 +77,6 @@ nav .start-Search , a:nth-child(6):hover~ .animation
          <nav>
             <a href=addproductsform>Add Products</a>
             <a href=#>View Products</a>
-            <a href=#>Update Product</a>
             <a href=#>Check Sales</a>
             <a href=#>Manage Orders</a>
             <a href=searchproductspage>Search</a>

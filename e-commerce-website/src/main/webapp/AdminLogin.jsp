@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="ISO-8859-1">
 <title>Admin Login Page</title>
 <script type="text/javascript">
 function login()
@@ -35,7 +34,7 @@ body
 .center
 {
    position:absolute;
-   top:70%;
+   top:50%;
    left:50%;
    transform:translate(-50%,-50%);
    width:400px;
@@ -44,6 +43,7 @@ body
 }
 .center h1
 {
+   font-size:25px;
    text-align:center;
    padding: 0 0 20px 0;
    border-bottom:1px solid silver;

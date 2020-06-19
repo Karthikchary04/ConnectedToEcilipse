@@ -11,6 +11,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -21,7 +22,7 @@ import Models.Admin_Model;
 import Models.Orders_Model;
 import Models.Product_Model;
 
-@WebServlet(urlPatterns = {"/AdminLogin","/adminloginform","/AdminForgetPassword","/addproductsform","/AddProductDetails","/adminoptions","/ViewAllProducts","/updateform","/UpdateProductDetails","/DeleteProduct","/ViewOrdersList","/getproducts","/searchproductspage"})
+@WebServlet(urlPatterns = {"/AdminLogin","/adminloginform","/AdminForgetPassword","/addproductsform","/AddProductDetails","/adminoptions","/ViewAllProducts","/updateform","/UpdateProductDetails","/DeleteProduct","/ViewOrdersList","/getproducts","/searchproductspage","/sorting"})
 public class Admin_Econtroller extends HttpServlet
 {
 	EDao e;
@@ -76,10 +77,10 @@ public class Admin_Econtroller extends HttpServlet
     	{
     		p.setPid(Integer.parseInt(req.getParameter("pid")));
     		ArrayList<Product_Model> al=new ArrayList<Product_Model>();
-    		p=e.getProductDetails(p);
+    		al=e.getProductDetails(p);
     		if(p!=null)
     		{
-    			req.setAttribute("productdetails",p);
+    			req.setAttribute("productdetails",al);
     			RequestDispatcher rd=req.getRequestDispatcher("AllInOne.jsp");
     			rd.forward(req, res);
     		}
@@ -111,8 +112,33 @@ public class Admin_Econtroller extends HttpServlet
     	{
     		p.setProductName(req.getParameter("search"));
     		p.setBrand(req.getParameter("search"));
+    		HttpSession ss=req.getSession();
+    		ss.setAttribute("searchvalue",req.getParameter("search"));
     		ArrayList<Product_Model> al=new ArrayList<Product_Model>();
     		al=e.getSearchResult(p);
+    		req.setAttribute("searchresult", al);
+    		if(al!=null)
+    		{
+    			File f=new File("D://cloud");
+    			File arr[]=f.listFiles();
+    			req.setAttribute("productimages",arr);
+    			RequestDispatcher rd=req.getRequestDispatcher("SearchProducts.jsp");
+    			rd.forward(req, res);
+    		}
+    		else
+    		{
+    			req.setAttribute("msg","NO Products Available");
+    			RequestDispatcher rd=req.getRequestDispatcher("SearchProducts.jsp");
+    			rd.forward(req, res);
+    		}
+    	}
+    	else if(path.equals("/sorting"))
+    	{
+    		ArrayList<Product_Model> al=new ArrayList<Product_Model>();
+    		HttpSession ss=req.getSession();
+    		p.setProductName((ss.getAttribute("searchvalue").toString()));
+    		p.setBrand(req.getParameter((ss.getAttribute("searchvalue").toString())));
+    		al=e.sortedSearchResult(p,req.getParameter("value"));
     		req.setAttribute("searchresult", al);
     		if(al!=null)
     		{
@@ -253,7 +279,7 @@ public class Admin_Econtroller extends HttpServlet
     					if(!item.isFormField())
     					{
     						p.setImage(new File(item.getName()).getName());
-    						item.write(new File(cloud+File.pathSeparator+p.getImage()));
+    						item.write(new File(cloud+File.separator+p.getImage()));
     					}
     					else
     					{

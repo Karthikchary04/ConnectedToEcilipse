@@ -67,11 +67,14 @@ public class EDao implements eCommerce_Interface
 		s.close();
 		return al;
 	}
-	public Product_Model getProductDetails(Product_Model p) 
+	public ArrayList<Product_Model> getProductDetails(Product_Model p) 
 	{
 		Session s=sf.openSession();
+		ArrayList<Product_Model> al=new ArrayList<Product_Model>();
 		p=(Product_Model) s.get(Product_Model.class,p.getPid());
-		return p;
+		al.add(p);
+		s.close();
+		return al;
 	}
 	public boolean updateProductDetails(Product_Model p)
 	{
@@ -157,6 +160,20 @@ public class EDao implements eCommerce_Interface
 			ss.close();
 		}
 		return b;
+	}
+	public ArrayList<Product_Model> sortedSearchResult(Product_Model p, String sortingType) 
+	{
+		ArrayList<Product_Model> al=new ArrayList<Product_Model>();
+		Session s=sf.openSession();
+		if(sortingType.equals("lowtohigh"))
+		{
+		   al=(ArrayList<Product_Model>) s.createQuery("from Product_Model where productName like '%"+p.getProductName()+"%' or brand like '%"+p.getBrand()+"%' order by price").list();
+		}
+		else
+		{
+		   al=(ArrayList<Product_Model>) s.createQuery("from Product_Model where productName like '%"+p.getProductName()+"%' or brand like '%"+p.getBrand()+"%' order by price desc").list();
+		}
+		return al;
 	}
 
 }

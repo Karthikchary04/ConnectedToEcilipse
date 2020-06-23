@@ -209,23 +209,23 @@ footer h3
        </div>
        </header>
        <div class="img_box">
-            <img src="peter-england white t-shirt.jpg">
+            <img src="C:\Users\KARTHIK\git\ConnectedToEcilipse\e-commerce-website\src\main\webapp/peter-england white t-shirt.jpg">
             <h1>Enjoy this <br> Trending Collection</h1>
             <button>Shop Now</button>
        </div>
        <div class="head2">
            <div class="first">
-               <img  src="women1.png"/>
+               <img  src="C:\Users\KARTHIK\git\ConnectedToEcilipse\e-commerce-website\src\main\webapp/women1.jpg"/>
                <h3>New Style</h3>
                <button>Shop Now</button>
             </div>   
            <div class="second">
-               <img src="women2.png"/>
+               <img src="C:\Users\KARTHIK\git\ConnectedToEcilipse\e-commerce-website\src\main\webapp/women2.jpg"/>
                <h3>Summer Collection</h3>
                <button>Shop Now</button>
            </div>    
            <div class="third">
-               <img src="nikeshoes.jpg"/>
+               <img src="C:\Users\KARTHIK\git\ConnectedToEcilipse\e-commerce-website\src\main\webapp/nikeshoes.jpg"/>
                <h3>Elegant Shoes</h3>
                <button>Shop Now</button>
            </div>    

@@ -1,4 +1,4 @@
-package Dao_Class_And_Interface;
+package ecommercewebsite.Dao_Class_And_Interface;
 
 import java.util.ArrayList;
 
@@ -7,10 +7,10 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 
-import Models.Admin_Model;
-import Models.Orders_Model;
-import Models.Product_Model;
-import Models.User_Model;
+import ecommercewebsite.Models.Admin_Model;
+import ecommercewebsite.Models.Orders_Model;
+import ecommercewebsite.Models.Product_Model;
+import ecommercewebsite.Models.User_Model;
 
 public class EDao implements eCommerce_Interface
 {
@@ -79,6 +79,11 @@ public class EDao implements eCommerce_Interface
 	public boolean updateProductDetails(Product_Model p)
 	{
 		boolean b=false;
+		Session ss=sf.openSession();
+		Product_Model p1=new Product_Model();
+		p1=(Product_Model)ss.get(Product_Model.class,p.getPid());
+		p.setSold(p1.getSold());
+		ss.close();
 		Session s=sf.openSession();
 		Transaction t=s.beginTransaction();
 		s.update(p);

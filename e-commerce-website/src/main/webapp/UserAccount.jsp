@@ -153,7 +153,7 @@ if(request.getAttribute("msg")!=null)
 </center>
         <div class="flex-wrap">
                <fieldset>               
-                      <form action="useraccount" novalidate method="post">
+                      <form action="useraccount" method="post">
                       <input type="radio" name="rg" id="sign-in" value="signin" checked/>
                       <input type="radio" name="rg" id="sign-up" value="signup"/>
                       <input type="radio" name="rg" id="reset" value="reset"/>
@@ -166,7 +166,8 @@ if(request.getAttribute("msg")!=null)
                       <input class="sign-up" type="text" name="mobile" placeholder="Mobile"/>
                       <input class="sign-up" type="email" name="email" placeholder="Email"/>
                       <input class="sign-up sign-in reset" type="text" name="username" placeholder="username"/>
-                      <input class="sign-up sign-in reset" type="password" name="password"  placeholder="New Password"/>
+                      <input class="sign-up sign-in" type="password" name="password"  placeholder="Password"/>
+                       <input class="reset" type="password" name="password"  placeholder="Password"/>
                       <button>Submit</button>
                       </form>
                </fieldset>

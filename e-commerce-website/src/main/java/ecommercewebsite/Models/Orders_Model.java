@@ -1,4 +1,4 @@
-package Models;
+package ecommercewebsite.Models;
 
 import java.sql.Date;
 

@@ -1,13 +1,11 @@
 <%@page import="ecommercewebsite.Models.Product_Model"%>
 <%@page import="java.io.File"%>
 <%@page import="java.util.ArrayList"%>
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="ISO-8859-1">
-<title>View Product</title>
+<title>Product Details</title>
+</head>
 <style type="text/css">
 .row {
   display: flex;
@@ -57,11 +55,10 @@
     for(Product_Model p:al)
     {
     	out.print(p.getProductName()+"<br><br>"+p.getBrand()+"<br><br>"+p.getCatagory()+"<br><br>"+p.getPrice()+"Rs/-<br><br>"+p.getInfo()+"<br><br>");
+    	out.print("<a href=getproductdetailstoupdate?pid="+p.getPid()+"><input type=submit value=UpdateProduct><br></a>");
+        out.print("<br><a href=deleteproduct?pid="+p.getPid()+"><input type=submit value=DeleteProduct></a>");
     }
     %>
-    <input type="submit" value="Add To Cart"><br>
-    <br><input type="submit" value="Buy Now">
   </div>
 </div>
-</body>
 </html>

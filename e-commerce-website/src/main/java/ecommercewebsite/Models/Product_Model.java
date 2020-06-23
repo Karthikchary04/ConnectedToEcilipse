@@ -1,4 +1,4 @@
-package Models;
+package ecommercewebsite.Models;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;

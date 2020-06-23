@@ -172,13 +172,13 @@ if(request.getAttribute("msg")!=null)
 <form action="AdminLogin" method="post" name="principalLogin" onsubmit="return login();">
 
 <div class="txt_field">
-<input type="text" name="t1">
+<input type="text" name="username">
 <span></span>
 <label>Username</label>
 </div>
 
 <div class="txt_field">
-<input type="password" name="t2">
+<input type="password" name="password">
 <span></span>
 <label>Password</label>
 </div>

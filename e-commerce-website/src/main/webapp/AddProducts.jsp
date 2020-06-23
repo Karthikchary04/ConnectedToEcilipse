@@ -206,7 +206,7 @@ if(request.getAttribute("msg")!=null)
 </div>
 
 <div class="txt_field">
-<input type="text" name="pname">
+<input type="text" name="productName">
 <span></span>
 <label>Product Name:</label>
 </div>
@@ -248,7 +248,7 @@ if(request.getAttribute("msg")!=null)
 </div>
 
 <div class="txt_field">
-<input type="file" name="info">
+<input type="file" name="image">
 </div>
 
 <input type="submit" value="Add Product">

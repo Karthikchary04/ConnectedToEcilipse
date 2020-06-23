@@ -1,5 +1,5 @@
 <%@page import="java.io.File"%>
-<%@page import="Models.Product_Model"%>
+<%@page import="ecommercewebsite.Models.Product_Model"%>
 <%@page import="java.util.ArrayList"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
@@ -86,7 +86,7 @@
 <center>
 <div class="search">
 <form action="getproducts">
-<input type="text" name="search"  placeholder="Ex:Jeans,Watches"><input type="submit" value="search"> <div class="dropdown">
+<input type="text" name="brand"  placeholder="Ex:Jeans,Watches"><input type="submit" value="search"> <div class="dropdown">
 		<button class="dropdown-button">Sort</button>
 		<div class="dropdown-list">
 			<a href="sorting?value=lowtohigh">Low To High</a>

@@ -1,14 +1,11 @@
 package ecommercewebsite.controller;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
+import javax.servlet.ServletContext;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -16,7 +13,6 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,27 +30,53 @@ import ecommercewebsite.Models.User_Model;
 @Controller
 public class Econtroller
 {
-	   static eCommerce_Interface e=new EDao();
-	    public final String cloud="D://cloud";
+	    static eCommerce_Interface e=new EDao();
+	    public String cloud=null;
+	    @RequestMapping("/")   
+	    public ModelAndView homePage(HttpServletRequest req)
+	    {
+	    	ServletContext sc=req.getServletContext();
+	    	this.cloud=sc.getInitParameter("cloud");
+	    	ModelAndView mav=new ModelAndView("index");
+	    	mav.addObject("msg","signin");
+	    	return mav;
+	    }
+	    @RequestMapping("/signout")
+	    public ModelAndView signOut(HttpSession ss)
+	    {
+	    	ModelAndView mav=new ModelAndView("index");
+	    	ss.invalidate();
+	    	return mav;
+	    }
+	    @RequestMapping("/loginforms")
+	    public String loginForms()
+	    {
+	    	return "loginforms";
+	    }
     	@RequestMapping("/adminloginform")
     	public String adminLoginPage()
     	{
-    		return "AdminLogin.jsp";
+    		return "AdminLogin";
     	}
     	@RequestMapping("/addproductsform")
     	public String addProductsPage()
     	{
-    		return "AddProducts.jsp";
+    		return "AddProducts";
     	}
     	@RequestMapping("/adminoptions")
     	public String adminWelcomePage()
     	{
-    		return "AdminWelcomepage.jsp";
+    		return "AdminWelcomepage";
     	}
     	@RequestMapping("/searchproductspage")
     	public String SearchProductsPage()
     	{
-    		return "SearchProducts.jsp";
+    		return "SearchProducts";
+    	}
+    	@RequestMapping("userloginpage")
+    	public String userLoginPage()
+    	{
+    		return "UserAccount";
     	}
     	@RequestMapping("/ViewAllProducts")
     	public ModelAndView viewAllProducts()
@@ -65,13 +87,13 @@ public class Econtroller
     		if(al!=null)
     		{
     			mav.addObject("listofproducts", al); 
-    			mav.setViewName("AllInOne.jsp");
+    			mav.setViewName("AllInOne");
     			return mav;
     		}
     		else
     		{
     			mav.addObject("msg","Products Not Available");
-    			mav.setViewName("AllInOne.jsp");
+    			mav.setViewName("AllInOne");
     			return mav;
     		}
     	}
@@ -84,13 +106,13 @@ public class Econtroller
     		if(p!=null)
     		{
     			mav.addObject("productdetails",al);
-    			mav.setViewName("AllInOne.jsp");
+    			mav.setViewName("AllInOne");
     			return mav;
     		}
     		else
     		{
     			mav.addObject("msg","Product Not Available");
-    			mav.setViewName("AllInOne.jsp");
+    			mav.setViewName("AllInOne");
     			return mav;
     		}
     	}
@@ -103,13 +125,13 @@ public class Econtroller
     		if(al!=null)
     		{
     			mav.addObject("orderslist",al);
-    			mav.setViewName("AllInOne.jsp");
+    			mav.setViewName("AllInOne");
     			return mav;
     		}
     		else
     		{
     			mav.addObject("msg","No Orders From Customers");
-    			mav.setViewName("AllInOne.jsp");
+    			mav.setViewName("AllInOne");
     			return mav;
     		}
     	}
@@ -122,19 +144,20 @@ public class Econtroller
     		al=e.getSearchResult(p);
     		if(al!=null)
     		{
-    			File f=new File("D://cloud");
+    			File f=new File(cloud);
     			File arr[]=f.listFiles();
-    			ModelAndView mav=new ModelAndView("SearchProducts.jsp");
-    			mav.addObject("searchresult", al);
+    			ModelAndView mav=new ModelAndView();
+    			mav.addObject("productdetails", al);
     			mav.addObject("productimages",arr);
-    			mav.setViewName("SearchProducts.jsp");
+    			mav.addObject("folderpath", cloud);
+    			mav.setViewName("SearchProducts");
     			return mav;
     		}
     		else
     		{
-    			ModelAndView mav=new ModelAndView("SearchProducts.jsp");
+    			ModelAndView mav=new ModelAndView();
     			mav.addObject("msg","NO Products Available");
-    			mav.setViewName("SearchProducts.jsp");
+    			mav.setViewName("SearchProducts");
     			return mav;
     		}
     	}
@@ -147,19 +170,19 @@ public class Econtroller
     		p.setProductName(ss.getAttribute("searchvalue").toString());
     		p.setBrand((ss.getAttribute("searchvalue").toString()));
     		al=e.sortedSearchResult(p,value);
-    		mav.addObject("searchresult", al);
+    		mav.addObject("productdetails", al);
     		if(al!=null)
     		{
-    			File f=new File("D://cloud");
+    			File f=new File(cloud);
     			File arr[]=f.listFiles();
     			mav.addObject("productimages",arr);
-    			mav.setViewName("SearchProducts.jsp");
+    			mav.setViewName("SearchProducts");
     			return mav;
     		}
     		else
     		{
     			mav.addObject("msg","NO Products Available");
-    			mav.setViewName("SearchProducts.jsp");
+    			mav.setViewName("SearchProducts");
     			return mav;
     		}
     	}
@@ -175,13 +198,13 @@ public class Econtroller
             	File f=new File("D://cloud");
     			File arr[]=f.listFiles();
     			mav.addObject("productimages",arr);
-    			mav.setViewName("UpdateProduct.jsp");
+    			mav.setViewName("UpdateProduct");
     			return mav;
             }
             else
             {
             	mav.addObject("msg","Invalid Product");
-            	mav.setViewName("UpdateProduct.jsp");
+            	mav.setViewName("UpdateProduct");
     			return mav;
             }
     	}
@@ -192,14 +215,15 @@ public class Econtroller
     		boolean b=e.adminLogin(a);
     		if(b)
     		{
-    			ss.setAttribute("login",a.getUsername());
-    			mav.setViewName("AdminWelcomepage.jsp");
+    			ss.setAttribute("login","adminlogin");
+    			mav.setViewName("AdminWelcomepage");
     			return mav;
     		}
     		else
     		{
+    			System.out.println("else block");
     			mav.addObject("msg","Invalid Username/Password");
-    			mav.setViewName("AdminLogin.jsp");
+    			mav.setViewName("AdminLogin");
     			return mav;
     		}
     	}
@@ -211,22 +235,22 @@ public class Econtroller
     		if(b)
     		{
     			mav.addObject("msg","Password Has Been Changed click here to <a href=adminloginform>Login</a>");
-    			mav.setViewName("AdminForgetPassword.jsp");
+    			mav.setViewName("AdminForgetPassword");
     			return mav;
     		}
     		else
     		{
     			mav.addObject("msg","Invalid Username.....Try Again With Correct Username");
-    			mav.setViewName("AdminForgetPassword.jsp");
+    			mav.setViewName("AdminForgetPassword");
     			return mav;
     		}
     	}
-    	@RequestMapping("/AddProductDetails")
-    	public ModelAndView addProducts(HttpServletRequest req,HttpServletResponse res)
+    	@RequestMapping(value= {"/AddProductDetails"},method=RequestMethod.POST)
+    	public ModelAndView addProducts(HttpServletRequest req)
     	{
     		Product_Model p=new Product_Model();
     		ModelAndView mav=new ModelAndView();
-    		if(ServletFileUpload.isMultipartContent(req));
+    		if(ServletFileUpload.isMultipartContent(req))
     		{
     			try
     			{
@@ -240,13 +264,9 @@ public class Econtroller
     					}
     					else
     					{
-    						if(item.getFieldName().equals("pid"))
+    						if(item.getFieldName().equals("productname")) 
     						{
-    							p.setPid(Integer.parseInt(item.getString()));
-    						}
-    						if(item.getFieldName().equals("pname"))
-    						{
-    							p.setProductName(item.getString());
+    						    p.setProductName(item.getString());	
     						}
     						if(item.getFieldName().equals("catagory"))
     						{
@@ -260,10 +280,6 @@ public class Econtroller
     						{
     							p.setStock(Integer.parseInt(item.getString()));
     						}
-    						if(item.getFieldName().equals("sold"))
-    						{
-    							p.setSold(Integer.parseInt(item.getString()));
-    						}
     						if(item.getFieldName().equals("price"))
     						{
     							p.setPrice(Integer.parseInt(item.getString()));
@@ -273,39 +289,39 @@ public class Econtroller
     							p.setInfo(item.getString());
     						}
     					}
-    				}
+       				}
     				boolean b=e.addProducts(p);
     				if(b)
     				{
     					mav.addObject("msg","Product Added Sucessfully Click Here To<a href=adminoptions>Go Back</a> <br> Or Add Another Product");
-    					mav.setViewName("AddProducts.jsp");
+    					mav.setViewName("AddProducts");
     					return mav;
     				}
     				else
     				{
     					mav.addObject("msg","Adding Product Is Failed.....Try Again!");
-    					mav.setViewName("AddProducts.jsp");
+    					mav.setViewName("AddProducts");
     					return mav;
     				}
     			}
     			catch (Exception e)
     			{
-    				mav.addObject("error","Request is not document type");
-    				mav.setViewName("AddProducts.jsp");
+    				mav.addObject("error","Request is not multipart type");
+    				mav.setViewName("AddProducts");
 					return mav;
 				}
     		}
+			return mav;
     	}   	
     	@RequestMapping("/UpdateProductDetails")
-    	public ModelAndView updateProductDetails(HttpServletRequest req,HttpServletResponse res)
+    	public ModelAndView updateProductDetails(@ModelAttribute("product_model") Product_Model p)
     	{
-    		Product_Model p=new Product_Model();
     		ModelAndView mav=new ModelAndView();
-    		if(ServletFileUpload.isMultipartContent(req));
+    		if(ServletFileUpload.isMultipartContent((HttpServletRequest) p));
     		{
     			try
     			{
-    				List<FileItem> multiparts=new ServletFileUpload(new DiskFileItemFactory()).parseRequest(req);
+    				List<FileItem> multiparts=new ServletFileUpload(new DiskFileItemFactory()).parseRequest((HttpServletRequest) p);
     				for(FileItem item:multiparts)
     				{
     					if(!item.isFormField())
@@ -315,13 +331,9 @@ public class Econtroller
     					}
     					else
     					{
-    						if(item.getFieldName().equals("pid"))
+    						if(item.getFieldName().equals("pname")) 
     						{
-    							p.setPid(Integer.parseInt(item.getString()));
-    						}
-    						if(item.getFieldName().equals("pname"))
-    						{
-    							p.setProductName(item.getString());
+    						    p.setProductName(item.getString());	
     						}
     						if(item.getFieldName().equals("catagory"))
     						{
@@ -361,7 +373,7 @@ public class Econtroller
     	        }
     	        catch (Exception e)
     	        {
-    	        	mav.addObject("error","Request is not document type");
+    	        	mav.addObject("error","Request is not multipart type");
     	        	mav.setViewName("ViewAllProducts");
 					return mav;
 		        }
@@ -381,7 +393,7 @@ public class Econtroller
     		else
     		{
     			mav.addObject("msg","Product Not Deleted");
-    			mav.setViewName("AllInOne.jsp");
+    			mav.setViewName("AllInOne");
     			return mav;
     		}
     	}
@@ -395,24 +407,26 @@ public class Econtroller
 			{
 				if(ss.getAttribute("login")!=null)
 				{
+					mav.addObject("logintype", ss.getAttribute("login"));
 					mav.addObject("productdetails",al); 
-				    File f=new File("D://cloud");
+				    File f=new File(cloud);
     			    File arr[]=f.listFiles();
+    			    mav.addObject("folderpath", cloud);
     			    mav.addObject("productimage",arr);
-    			    mav.setViewName("viewproduct.jsp");
+    			    mav.setViewName("viewproduct");
 				    return mav;
 				}
 				else
 				{
 					mav.addObject("msg","Login To Check Product");
-					mav.setViewName("UserAccount.jsp");
+					mav.setViewName("loginforms");
 					return mav;
 				}
 			}
 			else
 			{
 				mav.addObject("msg","Try Again");
-				mav.setViewName("viewproduct.jsp");
+				mav.setViewName("viewproduct");
 			    return mav;
 			}
 		}
@@ -428,14 +442,15 @@ public class Econtroller
     			boolean b=e.userLogin(u);
     			if(b)
     			{
-    				ss.setAttribute("login",u.getUsername());
-    				mav.setViewName("index.jsp");
+    				ss.setAttribute("login","customerlogin");
+    				mav.addObject("msg","signout");
+    				mav.setViewName("index");
     				return mav;
     			}
     			else
     			{
     				req.setAttribute("msg","Invalid Email/Password");
-    				mav.setViewName("UserAccount.jsp");
+    				mav.setViewName("UserAccount");
     				return mav;
     			}
     		}	
@@ -452,13 +467,13 @@ public class Econtroller
     			   if(b)
     			   {
     				   mav.addObject("msg","Login With Your Registered Details");
-    				   mav.setViewName("UserAccount.jsp");
+    				   mav.setViewName("UserAccount");
        				   return mav;
     			   }
     			   else
     			   { 
     				   mav.addObject("msg","Enter Proper Details");
-    				   mav.setViewName("UserAccount.jsp");
+    				   mav.setViewName("UserAccount");
        				   return mav;
     			   }
     		}
@@ -470,13 +485,13 @@ public class Econtroller
     			if(b)
     			{
     				mav.addObject("msg","Password Has Been Changed");
-    				mav.setViewName("UserAccount.jsp");
+    				mav.setViewName("UserAccount");
     				return mav;
     			}
     			else
     			{
     				mav.addObject("msg","Invalid Email");
-    				mav.setViewName("UserAccount.jsp");
+    				mav.setViewName("UserAccount");
     				return mav;
     			}
     		}

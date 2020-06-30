@@ -1,14 +1,16 @@
 package ecommercewebsite.Models;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
 public class Product_Model 
 {
    @Id
+   @GeneratedValue
    private int pid;
-   private String productName,brand,catagory,image,info;
+   private String productname,brand,catagory,image,info;
    private int stock,sold,price;
 public int getPid() {
 	return pid;
@@ -17,10 +19,10 @@ public void setPid(int pid) {
 	this.pid = pid;
 }
 public String getProductName() {
-	return productName;
+	return productname;
 }
 public void setProductName(String productName) {
-	this.productName = productName;
+	this.productname = productName;
 }
 public String getBrand() {
 	return brand;

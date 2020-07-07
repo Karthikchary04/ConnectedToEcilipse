@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.ServletContext;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,6 +22,8 @@ import org.springframework.web.servlet.ModelAndView;
 import ecommercewebsite.Dao_Class_And_Interface.EDao;
 import ecommercewebsite.Dao_Class_And_Interface.eCommerce_Interface;
 import ecommercewebsite.Models.Admin_Model;
+import ecommercewebsite.Models.Catagory_Model;
+import ecommercewebsite.Models.Filter_Model;
 import ecommercewebsite.Models.Orders_Model;
 import ecommercewebsite.Models.Product_Model;
 import ecommercewebsite.Models.User_Model;
@@ -31,12 +32,10 @@ import ecommercewebsite.Models.User_Model;
 public class Econtroller
 {
 	    static eCommerce_Interface e=new EDao();
-	    public String cloud=null;
+	    public static String cloud="C:\\Users\\KARTHIK\\git\\ConnectedToEcilipse\\e-commerce-website\\src\\main\\webapp\\webcollection\\cloud";
 	    @RequestMapping("/")   
-	    public ModelAndView homePage(HttpServletRequest req)
+	    public ModelAndView homePage()
 	    {
-	    	ServletContext sc=req.getServletContext();
-	    	this.cloud=sc.getInitParameter("cloud");
 	    	ModelAndView mav=new ModelAndView("index");
 	    	mav.addObject("msg","signin");
 	    	return mav;
@@ -45,6 +44,7 @@ public class Econtroller
 	    public ModelAndView signOut(HttpSession ss)
 	    {
 	    	ModelAndView mav=new ModelAndView("index");
+	    	mav.addObject("msg","signin");
 	    	ss.invalidate();
 	    	return mav;
 	    }
@@ -54,14 +54,26 @@ public class Econtroller
 	    	return "loginforms";
 	    }
     	@RequestMapping("/adminloginform")
-    	public String adminLoginPage()
+    	public ModelAndView adminLoginPage()
     	{
-    		return "AdminLogin";
+    		ModelAndView mav=new ModelAndView("UserAccount");
+    		mav.addObject("login", "adminlogin");
+    		return mav;
     	}
     	@RequestMapping("/addproductsform")
-    	public String addProductsPage()
+    	public ModelAndView addProductsPage()
     	{
-    		return "AddProducts";
+    		ModelAndView mav=null;
+    		ArrayList<Catagory_Model> al=new ArrayList<Catagory_Model>();
+    		al=e.getAllCatagories();
+    		if(al!=null)
+    		{
+    			mav=new ModelAndView("AdminWelcomepage");
+    			mav.addObject("catagories",al);
+        		mav.addObject("type", "addproducts");
+        		return mav;
+    		}
+			return mav;
     	}
     	@RequestMapping("/adminoptions")
     	public String adminWelcomePage()
@@ -69,14 +81,46 @@ public class Econtroller
     		return "AdminWelcomepage";
     	}
     	@RequestMapping("/searchproductspage")
-    	public String SearchProductsPage()
+    	public String SearchProducts()
     	{
     		return "SearchProducts";
     	}
-    	@RequestMapping("userloginpage")
-    	public String userLoginPage()
+    	@RequestMapping("addcatagoryform")
+    	public ModelAndView addCatagoryForm()
     	{
-    		return "UserAccount";
+    		ModelAndView mav=new ModelAndView("AdminWelcomepage");
+    		mav.addObject("type", "addcatagory");
+    		return mav;
+    	}
+    	@RequestMapping("userloginpage")
+    	public ModelAndView userLoginPage()
+    	{
+    		ModelAndView mav=new ModelAndView("UserAccount");
+    		mav.addObject("login", "customerlogin");
+    		return mav;
+    	}
+    	@RequestMapping("viewproductsbyfilterpage")
+    	public String viewProductsByFilterPage()
+    	{
+    		return "ViewProductsByFilter";
+    	}
+    	@RequestMapping("AddCatagory")
+    	public ModelAndView addCatagory(@ModelAttribute("catagory_model") Catagory_Model c)
+    	{
+    		ModelAndView mav=new ModelAndView();
+    		boolean b=e.addCatagory(c);
+    		if(b)
+    		{
+    			mav.addObject("msg","Catagory Added");
+    			mav.setViewName("AdminWelcomepage");
+    			return mav;
+    		}
+    		else
+    		{
+    			mav.addObject("msg","Adding Catagory Failed");
+    			mav.setViewName("AdminWelcomepage");
+    			return mav;
+    		}
     	}
     	@RequestMapping("/ViewAllProducts")
     	public ModelAndView viewAllProducts()
@@ -146,18 +190,16 @@ public class Econtroller
     		{
     			File f=new File(cloud);
     			File arr[]=f.listFiles();
-    			ModelAndView mav=new ModelAndView();
+    			ModelAndView mav=new ModelAndView("SearchProducts");
     			mav.addObject("productdetails", al);
     			mav.addObject("productimages",arr);
     			mav.addObject("folderpath", cloud);
-    			mav.setViewName("SearchProducts");
     			return mav;
     		}
     		else
     		{
-    			ModelAndView mav=new ModelAndView();
+    			ModelAndView mav=new ModelAndView("SearchProducts");
     			mav.addObject("msg","NO Products Available");
-    			mav.setViewName("SearchProducts");
     			return mav;
     		}
     	}
@@ -175,6 +217,7 @@ public class Econtroller
     		{
     			File f=new File(cloud);
     			File arr[]=f.listFiles();
+    			mav.addObject("folderpath", cloud);
     			mav.addObject("productimages",arr);
     			mav.setViewName("SearchProducts");
     			return mav;
@@ -195,8 +238,9 @@ public class Econtroller
             if(al!=null)
             {
             	mav.addObject("productdetailstoupdate",al);
-            	File f=new File("D://cloud");
+            	File f=new File(cloud);
     			File arr[]=f.listFiles();
+    			mav.addObject("folderpath", cloud);
     			mav.addObject("productimages",arr);
     			mav.setViewName("UpdateProduct");
     			return mav;
@@ -221,7 +265,6 @@ public class Econtroller
     		}
     		else
     		{
-    			System.out.println("else block");
     			mav.addObject("msg","Invalid Username/Password");
     			mav.setViewName("AdminLogin");
     			return mav;
@@ -293,55 +336,52 @@ public class Econtroller
     				boolean b=e.addProducts(p);
     				if(b)
     				{
-    					mav.addObject("msg","Product Added Sucessfully Click Here To<a href=adminoptions>Go Back</a> <br> Or Add Another Product");
-    					mav.setViewName("AddProducts");
+    					mav.addObject("msg","Product Added Sucessfully");
+    					mav.setViewName("AdminWelcomepage");
     					return mav;
     				}
     				else
     				{
     					mav.addObject("msg","Adding Product Is Failed.....Try Again!");
-    					mav.setViewName("AddProducts");
+    					mav.setViewName("AdminWelcomepage");
     					return mav;
     				}
     			}
     			catch (Exception e)
     			{
-    				mav.addObject("error","Request is not multipart type");
-    				mav.setViewName("AddProducts");
+    				mav.addObject("msg","Request is not multipart type");
+    				mav.setViewName("AdminWelcomepage");
 					return mav;
 				}
     		}
 			return mav;
-    	}   	
-    	@RequestMapping("/UpdateProductDetails")
-    	public ModelAndView updateProductDetails(@ModelAttribute("product_model") Product_Model p)
+    	}
+    	@RequestMapping(value= {"/updateproductdetails"},method = RequestMethod.POST)
+    	public ModelAndView updateProduct(HttpServletRequest req)
     	{
-    		ModelAndView mav=new ModelAndView();
-    		if(ServletFileUpload.isMultipartContent((HttpServletRequest) p));
+    		ModelAndView mav=null;
+    		Product_Model p=new Product_Model();
+    		if(ServletFileUpload.isMultipartContent(req))
     		{
     			try
     			{
-    				List<FileItem> multiparts=new ServletFileUpload(new DiskFileItemFactory()).parseRequest((HttpServletRequest) p);
+    				List<FileItem> multiparts=new ServletFileUpload(new DiskFileItemFactory()).parseRequest(req);
     				for(FileItem item:multiparts)
     				{
     					if(!item.isFormField())
-    					{
-    						p.setImage(new File(item.getName()).getName());
-    						item.write(new File(cloud+File.separator+p.getImage()));
-    					}
-    					else
-    					{
-    						if(item.getFieldName().equals("pname")) 
+     					{
+     						p.setImage(new File(item.getName()).getName());
+     						item.write(new File(cloud+File.separator+p.getImage()));
+     					}
+    					else 
+    					{    					
+    						if(item.getFieldName().equals("pid")) 
+    						{
+    						    p.setPid(Integer.parseInt(item.getString()));	  					
+    						}
+    						if(item.getFieldName().equals("productname"))
     						{
     						    p.setProductName(item.getString());	
-    						}
-    						if(item.getFieldName().equals("catagory"))
-    						{
-    							p.setCatagory(item.getString());
-    						}
-    						if(item.getFieldName().equals("brand"))
-    						{
-    							p.setBrand(item.getString());
     						}
     						if(item.getFieldName().equals("stock"))
     						{
@@ -355,47 +395,69 @@ public class Econtroller
     						{
     							p.setInfo(item.getString());
     						}
-    					}
+    					}    				     					
     				}
-    				boolean b=e.updateProductDetails(p);
-    				if(b)
-    				{
-    					mav.addObject("msg","Product Updated Sucessfully Click Here To<a href=adminoptions>Go Back</a>");
-    					mav.setViewName("ViewAllProducts");
-    					return mav;
-    				}
-    				else
-    				{
-    					mav.addObject("msg","Updating Product Details Failed.....Try Again!");
-    					mav.setViewName("ViewAllProducts");
-    					return mav;
-    				}
-    	        }
-    	        catch (Exception e)
-    	        {
-    	        	mav.addObject("error","Request is not multipart type");
-    	        	mav.setViewName("ViewAllProducts");
-					return mav;
-		        }
-            }    		
+					p.setImage(new EDao().updateProductDetails(p));
+					if(p.getImage()!=null)
+					{
+						File f=new File(cloud);
+		    			File arr[]=f.listFiles();
+		    			for(File f1:arr)
+		    			{
+		    				if(f1.getName().equals(p.getImage()))
+		    				{
+		    					if(f1.delete())
+		    					{
+		    						mav=new ModelAndView("SearchProducts");
+		    						mav.addObject("msg","Product Details Updated");
+		    		    			return mav;
+		    					}
+		    				}
+		    			}
+					}
+					else
+					{
+						mav=new ModelAndView("SearchProducts");
+						return mav;
+					}
+    			}
+    			catch (Exception e)
+    			{
+					System.out.println(e);
+				}
+    		}
+			return mav;   		
     	}
     	@RequestMapping("/DeleteProduct")
     	public ModelAndView deleteProduct(@ModelAttribute("product_model") Product_Model p)
     	{
             ModelAndView mav=new ModelAndView();
-    		boolean b=e.deleteProduct(p);
-    		if(b)
+    		p.setImage(e.deleteProduct(p));
+    		if(p.getImage()!=null)
     		{
-    			mav.addObject("msg","Product Deleted");
-    			mav.setViewName("AllInOne.jsp");
-    			return mav;
+    			File f=new File(cloud);
+    			File arr[]=f.listFiles();
+    			for(File f1:arr)
+    			{
+    				if(f1.getName().equals(p.getImage()))
+    				{
+    					if(f1.delete())
+    					{
+    						mav.addObject("msg","Product Deleted");
+    		    			mav.setViewName("SearchProducts");
+    		    			return mav;
+    					}
+    				}
+    			}
+    			
     		}
     		else
     		{
     			mav.addObject("msg","Product Not Deleted");
-    			mav.setViewName("AllInOne");
+    			mav.setViewName("SearchProducts");
     			return mav;
     		}
+			return mav;
     	}
     	@RequestMapping("/getproductdetails")
 		public ModelAndView getProductDetails(@ModelAttribute("product_model") Product_Model p,HttpSession ss) 
@@ -449,7 +511,7 @@ public class Econtroller
     			}
     			else
     			{
-    				req.setAttribute("msg","Invalid Email/Password");
+    				mav.addObject("msg","Invalid Email/Password");
     				mav.setViewName("UserAccount");
     				return mav;
     			}
@@ -496,5 +558,38 @@ public class Econtroller
     			}
     		}
 			return mav;
-    }
+       }
+       @RequestMapping("/reqfilter")
+       public ModelAndView filter(HttpServletRequest req)
+       {
+    	  ModelAndView mav=null;
+    	  Filter_Model fm=new Filter_Model();
+    	  String arr[]=req.getParameterValues("catagories");
+    	  ArrayList<String> al=new ArrayList<String>();
+    	  for(String c:arr)
+    	  {
+    		  al.add(c);
+    	  }
+    	 fm.setCatagories(al);
+    	 for(String c:req.getParameterValues("brands"))
+     	 {
+   		   al.add(c);
+      	 }
+    	   
+    	   fm.setBrands(al);
+    	   fm.setPrice(Integer.parseInt( req.getParameter("price")));
+    	   ArrayList<Product_Model> al1=new ArrayList<Product_Model>();
+    	   al1=e.filter(fm);
+    	   if(al1!=null)
+    	   {
+    		   File f=new File(cloud);
+   			File arr1[]=f.listFiles();
+   			mav=new ModelAndView("SearchProducts");
+   			mav.addObject("productdetails", al1);
+   			mav.addObject("productimages",arr1);
+   			mav.addObject("folderpath", cloud);
+   			return mav;
+    	   }
+    	   return mav;
+       }
 }

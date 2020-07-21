@@ -1,10 +1,43 @@
 package ecommercewebsite.Models;
 
+import javax.persistence.Cacheable;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+@Entity
+@Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+
 public class Cart_Model 
 {
-     private int pid;
-     private String productName,brand,catagory,quantity;
-     private int price;
+	 @Id
+	 @GeneratedValue
+	 private int cpid;
+     public int getCpid() {
+		return cpid;
+	}
+	public void setCpid(int cpid) {
+		this.cpid = cpid;
+	}
+	private int pid;
+     private String customerusername,productName,brand,catagory,productimage;
+     public String getCustomerusername() {
+		return customerusername;
+	}
+	public void setCustomerusername(String customerusername) {
+		this.customerusername = customerusername;
+	}
+	private int price,size,quantity;
+	public int getSize() {
+		return size;
+	}
+	public void setSize(int size) {
+		this.size = size;
+	}
 	public int getPid() {
 		return pid;
 	}
@@ -29,10 +62,10 @@ public class Cart_Model
 	public void setCatagory(String catagory) {
 		this.catagory = catagory;
 	}
-	public String getQuantity() {
+	public int getQuantity() {
 		return quantity;
 	}
-	public void setQuantity(String quantity) {
+	public void setQuantity(int quantity) {
 		this.quantity = quantity;
 	}
 	public int getPrice() {
@@ -40,6 +73,12 @@ public class Cart_Model
 	}
 	public void setPrice(int price) {
 		this.price = price;
+	}
+	public String getProductimage() {
+		return productimage;
+	}
+	public void setProductimage(String productimage) {
+		this.productimage = productimage;
 	}
      
 }

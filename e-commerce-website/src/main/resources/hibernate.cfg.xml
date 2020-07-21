@@ -21,6 +21,10 @@
             <mapping class="ecommercewebsite.Models.Product_Model"/>
             <mapping class="ecommercewebsite.Models.User_Model"/>
             <mapping class="ecommercewebsite.Models.Cart_Model"/>
+            <mapping class="ecommercewebsite.Models.MyOrders_Model"/>
+            <mapping class="ecommercewebsite.Models.Catagory_Model"/>
+            <mapping class="ecommercewebsite.Models.Brands_Model"/>
+            <mapping class="ecommercewebsite.Models.WishList_Model"/>
             <mapping class="ecommercewebsite.Models.Orders_Model"/>
             
     </session-factory>

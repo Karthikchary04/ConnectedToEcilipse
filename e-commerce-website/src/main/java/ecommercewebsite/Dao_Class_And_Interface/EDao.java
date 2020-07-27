@@ -86,7 +86,10 @@ public class EDao implements eCommerce_Interface
 	{
 		ArrayList<Catagory_Model> al=new ArrayList<Catagory_Model>();
 		Session s=sf.openSession();
-		al=(ArrayList<Catagory_Model>) s.createQuery("from Catagory_Model").list();
+		Query q= s.createQuery("from Catagory_Model");
+		al=(ArrayList<Catagory_Model>) q.list();
+		q.setCacheable(true);
+		
 		return al;
 	}
 	public ArrayList<Brands_Model> getAllBrands()
@@ -94,6 +97,7 @@ public class EDao implements eCommerce_Interface
 		ArrayList<Brands_Model> brands=new ArrayList<Brands_Model>();
 		Session s=sf.openSession();
 		brands=(ArrayList<Brands_Model>)s.createQuery("From Brands_Model").list();
+		
 		s.close();
 		return brands;
 	}
@@ -673,6 +677,7 @@ public class EDao implements eCommerce_Interface
 		Session ss=sf.openSession();
 		cart=(ArrayList<Cart_Model>)ss.createQuery("from Cart_Model where customerusername='"+mm.getCustomerusername()+"'").list();
 		ss.close();
+		ArrayList<MyOrders_Model> al=new ArrayList<MyOrders_Model>();
 		for(Cart_Model c:cart)
 		{
 		    MyOrders_Model mo=new MyOrders_Model();
@@ -693,6 +698,8 @@ public class EDao implements eCommerce_Interface
 		    s.save(mo);
 		    t.commit();
 		    s.close();
+		    
+		    al.add(mo);
 		    
 		    Session se=sf.openSession();
 		    Product_Model p=new Product_Model();
@@ -720,11 +727,6 @@ public class EDao implements eCommerce_Interface
 	    si.save(o1);
 	    tt.commit();
 	    si.close();
-	    
-		Session ses=sf.openSession();
-		ArrayList<MyOrders_Model> al=new ArrayList<MyOrders_Model>();
-		al=(ArrayList<MyOrders_Model>)ses.createQuery("from MyOrders_Model where customerusername='"+mm.getCustomerusername()+"'").list();
-		ses.close();
 		return al;
 	}
 	public ArrayList<MyOrders_Model> checkCategoryOrdersBetweenTwoDates(Date startDate, Date endDate,String Category)

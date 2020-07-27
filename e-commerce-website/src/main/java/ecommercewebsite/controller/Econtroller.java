@@ -8,7 +8,6 @@ import java.util.List;
 
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.fileupload.FileItem;
@@ -38,12 +37,20 @@ import ecommercewebsite.Models.WishList_Model;
 public class Econtroller
 {
 	    static eCommerce_Interface e=new EDao();
-	    public static String cloud="C:\\Users\\KARTHIK\\git\\ConnectedToEcilipse\\e-commerce-website\\src\\main\\webapp\\webcollection\\cloud";
+	    public static String cloud;
 	    @RequestMapping("/")   
-	    public ModelAndView homePage()
+	    public ModelAndView homePage(HttpServletRequest req)
 	    {
+	    	this.cloud=req.getServletContext().getInitParameter("cloud");
 	    	ModelAndView mav=new ModelAndView("index");
 	    	mav.addObject("msg","signin");
+	    	return mav;
+	    }
+	    @RequestMapping("/about")
+	    public ModelAndView aboutPage(HttpSession s)
+	    {
+	    	ModelAndView mav=new ModelAndView("About.jsp");
+	    	mav.addObject("logintype",s.getAttribute("login"));
 	    	return mav;
 	    }
 	    @RequestMapping("/adminloginform")
@@ -58,14 +65,14 @@ public class Econtroller
     	{
     		return "AdminWelcomepage";
     	}
-	    @RequestMapping("userloginpage")
+	    @RequestMapping("/userloginpage")
     	public ModelAndView userLoginPage()
     	{
     		ModelAndView mav=new ModelAndView("LoginPages");
     		mav.addObject("login", "customerlogin");
     		return mav;
     	}
-	    @RequestMapping("addcatagoryform")
+	    @RequestMapping("/addcatagoryform")
     	public ModelAndView addCatagoryForm()
     	{
     		ModelAndView mav=new ModelAndView("AdminWelcomepage");
@@ -261,7 +268,6 @@ public class Econtroller
     			File arr[]=f.listFiles();
     			mav.addObject("folderpath", cloud);
     			mav.addObject("productimages",arr);
-    			mav.addObject("msg", "signout");
     			mav.addObject("username",ss.getAttribute("username"));
     			mav.addObject("logintype",ss.getAttribute("login"));
     			mav.setViewName("SearchProducts");
@@ -269,7 +275,7 @@ public class Econtroller
     		}
     		else
     		{
-    			mav.addObject("msg1","NO Products Available");
+    			mav.addObject("msg","NO Products Available");
     			mav.addObject("msg", "signout");
     			mav.setViewName("SearchProducts");
     			return mav;
@@ -443,9 +449,10 @@ public class Econtroller
     				p.setImage(new EDao().updateProductDetails(p));
 					if(p.getImage()!=null)
 					{
-						mav=new ModelAndView("SearchProducts");
+						mav=new ModelAndView();
 						mav.addObject("msg","Product Details Updated");
 						mav.addObject("logintype", ss.getAttribute("login"));
+						mav.setViewName("redirect:getproducts?brand="+ss.getAttribute("searchvalue").toString()+"");
 		    			return mav;
 					}
 				}
@@ -468,8 +475,7 @@ public class Econtroller
     					if(f1.delete())
     					{
     						mav.addObject("msg","Product Deleted");
-    		    			mav.setViewName("SearchProducts");
-    		    			mav.addObject("logintype", ss.getAttribute("login"));
+    		    			mav.setViewName("redirect:getproducts?brand="+ss.getAttribute("searchvalue").toString()+"");
     		    			return mav;
     					}
     				}
@@ -549,7 +555,7 @@ public class Econtroller
 	     		  return mav;
 	    	  }
 	       }
-    	@RequestMapping("/AdminLogin")
+    	@RequestMapping(value= {"/AdminLogin"},method = RequestMethod.POST)
     	public ModelAndView adminLogin(@ModelAttribute("admin_model") Admin_Model a,HttpSession ss)
     	{
     		ModelAndView mav=new ModelAndView();
@@ -576,7 +582,7 @@ public class Econtroller
     		mav.addObject("page","adminforgotpassword");
     		return mav;
     	}
-    	@RequestMapping("/adminforgotpassword")
+    	@RequestMapping(value= {"/adminforgotpassword"},method = RequestMethod.POST)
     	public ModelAndView adminForgotPassword(@ModelAttribute("admin_model") Admin_Model a)
     	{
     		ModelAndView mav=new ModelAndView();
@@ -594,15 +600,12 @@ public class Econtroller
     			return mav;
     		}
     	} 
-    	@RequestMapping(value="/useraccount",method = RequestMethod.POST)
-    	public ModelAndView userSignInSignUpResetPassword(HttpServletRequest req,HttpServletResponse res,HttpSession ss)
+    	@RequestMapping(value= {"/useraccount"},method = RequestMethod.POST)
+    	public ModelAndView userSignInSignUpResetPassword(@ModelAttribute("user_model") User_Model u,@RequestParam("rg") String type,HttpSession ss)
     	{
-        	User_Model u=new User_Model();
     		ModelAndView mav=new ModelAndView();
-    		if(req.getParameter("rg").equals("signin"))
+    		if(type.equals("signin"))
     		{
-    			u.setUsername(req.getParameter("username"));
-    			u.setPassword(req.getParameter("password"));
     			boolean b=e.userLogin(u);
     			if(b)
     			{
@@ -621,15 +624,8 @@ public class Econtroller
     				return mav;
     			}
     		}	
-    		else if(req.getParameter("rg").equals("signup"))
+    		else if(type.equals("signup"))
     		{
-    			   u.setFullname(req.getParameter("name"));
-    			   u.setDob(req.getParameter("dob"));
-    			   u.setGender(req.getParameter("gender"));
-    			   u.setMobile(Long.parseLong(req.getParameter("mobile")));
-    			   u.setEmail(req.getParameter("email"));
-    			   u.setUsername(req.getParameter("username"));
-    			   u.setPassword(req.getParameter("password"));
        			   boolean b=e.userRegister(u);
     			   if(b)
     			   {
@@ -645,10 +641,8 @@ public class Econtroller
        				   return mav;
     			   }
     		}
-    		else if(req.getParameter("rg").equals("reset"))
+    		else if(type.equals("reset"))
     		{
-    			u.setUsername(req.getParameter("username"));
-    			u.setPassword(req.getParameter("password"));
     			boolean b=e.userResetPassword(u);
     			if(b)
     			{

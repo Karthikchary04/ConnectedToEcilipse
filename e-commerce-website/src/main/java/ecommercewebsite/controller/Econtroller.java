@@ -37,11 +37,11 @@ import ecommercewebsite.Models.WishList_Model;
 public class Econtroller
 {
 	    static eCommerce_Interface e=new EDao();
-	    public static String cloud;
+	    public static String cloud="C:\\Users\\KARTHIK\\git\\ConnectedToEcilipse\\e-commerce-website\\src\\main\\webapp\\webcollection\\cloud";
 	    @RequestMapping("/")   
-	    public ModelAndView homePage(HttpServletRequest req)
+	    public ModelAndView homePage()
 	    {
-	    	this.cloud=req.getServletContext().getInitParameter("cloud");
+	    	
 	    	ModelAndView mav=new ModelAndView("index");
 	    	mav.addObject("msg","signin");
 	    	return mav;
@@ -49,9 +49,35 @@ public class Econtroller
 	    @RequestMapping("/about")
 	    public ModelAndView aboutPage(HttpSession s)
 	    {
-	    	ModelAndView mav=new ModelAndView("About.jsp");
+	    	ModelAndView mav=new ModelAndView("About");
 	    	mav.addObject("logintype",s.getAttribute("login"));
 	    	return mav;
+	    }
+	    @RequestMapping("/getproductsofcategory")
+	    public ModelAndView getProductsOfCategory(@ModelAttribute("catagory_model") Catagory_Model c,HttpSession ses)
+	    {
+	    	ModelAndView mav=null;
+	    	ArrayList<Product_Model> products=new ArrayList<Product_Model>();
+	    	ArrayList<Catagory_Model> categories=new ArrayList<Catagory_Model>();
+	    	ArrayList<Brands_Model> brands=new ArrayList<Brands_Model>();
+	    	categories=e.getAllCatagories();
+	    	brands=e.getAllBrands();
+	    	products=e.getProductsOfCategory(c);
+	    	if(products!=null)
+	    	{
+	    		File f=new File(cloud);
+    			File arr[]=f.listFiles();
+    			mav=new ModelAndView("SearchProducts");
+    			ses.setAttribute("searchvalue",c.getCatagory());
+    			mav.addObject("categories", categories);
+	 		    mav.addObject("brands",brands);
+    			mav.addObject("productdetails",products);
+    			mav.addObject("productimages",arr);
+    			mav.addObject("logintype",ses.getAttribute("login"));
+    			mav.addObject("folderpath", cloud);
+    			return mav;
+	    	}
+			return mav;
 	    }
 	    @RequestMapping("/adminloginform")
     	public ModelAndView adminLoginPage()
@@ -177,6 +203,10 @@ public class Econtroller
     						{
     							p.setInfo(item.getString());
     						}
+    						if(item.getFieldName().equals("type"))
+    						{
+    							p.setType(item.getString());
+    						}
     					}
        				}
     				boolean b=e.addProducts(p);
@@ -215,7 +245,6 @@ public class Econtroller
 	    		mav=new ModelAndView("SearchProducts");
 	    		mav.addObject("categories", categories);
 	 		    mav.addObject("brands",brands);
-	    		mav.addObject("username",ss.getAttribute("username"));
 	    		mav.addObject("logintype",ss.getAttribute("login"));
 	    		return mav;
 	    	}
@@ -236,7 +265,6 @@ public class Econtroller
     			ModelAndView mav=new ModelAndView("SearchProducts");
     			mav.addObject("productdetails", al);
     			mav.addObject("productimages",arr);
-    			mav.addObject("username",ses.getAttribute("username"));
     			mav.addObject("logintype",ses.getAttribute("login"));
     			mav.addObject("folderpath", cloud);
     			return mav;
@@ -245,7 +273,6 @@ public class Econtroller
     		{
     			ModelAndView mav=new ModelAndView("SearchProducts");
     			mav.addObject("msg","Searched Product Not Available");
-    			mav.addObject("username",ses.getAttribute("username"));
     			mav.addObject("logintype",ses.getAttribute("login"));
     			mav.addObject("folderpath", cloud);
     			return mav;
@@ -260,6 +287,10 @@ public class Econtroller
     		p.setProductName(ss.getAttribute("searchvalue").toString());
     		p.setBrand((ss.getAttribute("searchvalue").toString()));
     		p.setCatagory((ss.getAttribute("searchvalue").toString()));
+    		ArrayList<Catagory_Model> categories=new ArrayList<Catagory_Model>();
+	    	ArrayList<Brands_Model> brands=new ArrayList<Brands_Model>();
+	    	categories=e.getAllCatagories();
+	    	brands=e.getAllBrands();
     		al=e.sortedSearchResult(p,value);
     		mav.addObject("productdetails", al);
     		if(al!=null)
@@ -268,7 +299,8 @@ public class Econtroller
     			File arr[]=f.listFiles();
     			mav.addObject("folderpath", cloud);
     			mav.addObject("productimages",arr);
-    			mav.addObject("username",ss.getAttribute("username"));
+    			mav.addObject("categories", categories);
+	 		    mav.addObject("brands",brands);
     			mav.addObject("logintype",ss.getAttribute("login"));
     			mav.setViewName("SearchProducts");
     			return mav;
@@ -294,7 +326,6 @@ public class Econtroller
 				if(ss.getAttribute("login")!=null)
 				{
 					mav.addObject("logintype", ss.getAttribute("login"));
-					mav.addObject("username",ss.getAttribute("username"));
 					mav.addObject("productdetails",al); 
 				    File f=new File(cloud);
     			    File arr[]=f.listFiles();
@@ -306,10 +337,13 @@ public class Econtroller
     			    if(ss.getAttribute("cartmsg")!=null)
     			    {
     			    	mav.addObject("msg",ss.getAttribute("cartmsg"));
+    			    	ss.removeAttribute("cartmsg");
+    			    	
     			    }
     			    if(ss.getAttribute("wishlistmsg")!=null)
     			    {
     			    	mav.addObject("msg",ss.getAttribute("wishlistmsg"));
+    			    	ss.removeAttribute("wishlistmsg");
     			    }
     			    mav.setViewName("viewproduct");
 				    return mav;
@@ -319,6 +353,7 @@ public class Econtroller
 					mav.addObject("msg1","Login To Check Product");
 					mav.setViewName("LoginPages");
 					mav.addObject("login", "customerlogin");
+					ss.setAttribute("pid",p.getPid());
 					return mav;
 				}
 				}
@@ -463,6 +498,10 @@ public class Econtroller
     	public ModelAndView deleteProduct(@ModelAttribute("product_model") Product_Model p,HttpSession ss)
     	{
             ModelAndView mav=new ModelAndView();
+            ArrayList<Catagory_Model> categories=new ArrayList<Catagory_Model>();
+	    	ArrayList<Brands_Model> brands=new ArrayList<Brands_Model>();
+	    	categories=e.getAllCatagories();
+	    	brands=e.getAllBrands();
     		p.setImage(e.deleteProduct(p));
     		if(p.getImage()!=null)
     		{
@@ -475,6 +514,8 @@ public class Econtroller
     					if(f1.delete())
     					{
     						mav.addObject("msg","Product Deleted");
+    						mav.addObject("categories", categories);
+    			 		    mav.addObject("brands",brands);
     		    			mav.setViewName("redirect:getproducts?brand="+ss.getAttribute("searchvalue").toString()+"");
     		    			return mav;
     					}
@@ -562,16 +603,20 @@ public class Econtroller
     		boolean b=e.adminLogin(a);
     		if(b)
     		{
+    			if(ss.getAttribute("pid")!=null)
+    			{
+    				ss.setAttribute("login","adminlogin");
+    				mav.setViewName("redirect:getproductdetails?pid="+ss.getAttribute("pid")+"");
+    				return mav;
+    			}
     			ss.setAttribute("login","adminlogin");
-    			ss.setAttribute("username",a.getUsername());
     			mav.setViewName("AdminWelcomepage");
     			return mav;
     		}
     		else
     		{
-    			mav.addObject("msg","Invalid Username/Password");
-    			mav.addObject("login", "adminlogin");
-    			mav.setViewName("LoginPages");
+    			mav.addObject("msg1","Invalid Username/Password");
+    			mav.setViewName("redirect:adminloginform");
     			return mav;
     		}
     	}
@@ -609,18 +654,28 @@ public class Econtroller
     			boolean b=e.userLogin(u);
     			if(b)
     			{
-    				ss.setAttribute("login","customerlogin");
-    				ss.setAttribute("username",u.getUsername());
-    				mav.addObject("username",u.getUsername());
-    				mav.addObject("logintype",ss.getAttribute("login"));
-    				mav.setViewName("index");
-    				return mav;
+    				if(ss.getAttribute("pid")!=null)
+    				{
+    					ss.setAttribute("login","customerlogin");
+        				ss.setAttribute("username",u.getUsername());
+        				mav.setViewName("redirect:getproductdetails?pid="+ss.getAttribute("pid")+"");
+        				return mav;
+    				}
+    				else
+    				{
+    					ss.setAttribute("login","customerlogin");
+        				ss.setAttribute("username",u.getUsername());
+        				mav.addObject("username",u.getUsername());
+        				mav.addObject("logintype",ss.getAttribute("login"));
+        				mav.setViewName("index");
+        				return mav;
+    				}
     			}
     			else
     			{
     				mav.addObject("msg1","Invalid Email/Password");
     				mav.addObject("login", "customerlogin");
-    				mav.setViewName("LoginPages");
+ 				   mav.setViewName("LoginPages");
     				return mav;
     			}
     		}	
@@ -637,6 +692,7 @@ public class Econtroller
     			   else
     			   { 
     				   mav.addObject("msg1","Enter Proper Details");
+    				   mav.addObject("login", "customerlogin");
     				   mav.setViewName("LoginPages");
        				   return mav;
     			   }
@@ -661,9 +717,11 @@ public class Econtroller
 			return mav;
        }     
        @RequestMapping("/reqprofile")
-       public ModelAndView profile(@ModelAttribute("user_model") User_Model um,HttpSession ss)
+       public ModelAndView profile(HttpSession ss)
        {
     	   ModelAndView mav=null;
+    	   User_Model um=new User_Model();
+    	   um.setUsername(ss.getAttribute("username").toString());
     	   ArrayList<User_Model> al=new ArrayList<User_Model>();
     	   al=e.getCustomerDetails(um);
     	   if(al!=null)
@@ -675,7 +733,6 @@ public class Econtroller
     		   mav.addObject("profilepicture",arr);
       		   mav.addObject("folderpath", cloud);
       		   mav.addObject("logintype", ss.getAttribute("login"));
-			   mav.addObject("msg", "signout");
     	   }
     	   return mav;
        }
@@ -844,7 +901,6 @@ public class Econtroller
     		   mav.addObject("productdetails",c);
     		   mav.addObject("page","payment");
     		   mav.addObject("logintype",s.getAttribute("login"));
-    		   mav.addObject("username",s.getAttribute("username"));
     		   mav.addObject("orderamount",c.getPrice());
     		   return mav;
     	   }
@@ -1139,7 +1195,6 @@ public class Econtroller
         		   mav.addObject("deliverydate",m.getDeliverydate());
         		   mav.addObject("shippingadress",m.getShippingaddress());
         		   mav.addObject("logintype",s.getAttribute("login"));
-        		   mav.addObject("username",s.getAttribute("username"));
         		   mav.addObject("page","sucessmsg");
         		   return mav;
         	   }
@@ -1180,7 +1235,6 @@ public class Econtroller
     	   {
     		   mav=new ModelAndView("viewproduct");
     		   mav.addObject("logintype",s.getAttribute("login"));
-    		   mav.addObject("username",s.getAttribute("username"));
     		   mav.addObject("page","paymentsucess");
     		   mav.addObject("myorders",al);
     		   return mav;

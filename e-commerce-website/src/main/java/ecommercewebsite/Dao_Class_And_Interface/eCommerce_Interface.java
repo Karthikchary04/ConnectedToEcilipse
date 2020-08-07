@@ -60,4 +60,5 @@ public interface eCommerce_Interface
    public ArrayList<MyOrders_Model> getMyOrders(MyOrders_Model o);
    public boolean payment(Orders_Model o, MyOrders_Model m,int pid);
    public ArrayList<MyOrders_Model> payment1(Orders_Model o1, MyOrders_Model mm);
+   public ArrayList<Product_Model> getProductsOfCategory(Catagory_Model c);
 }

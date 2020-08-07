@@ -2,13 +2,13 @@ package ecommercewebsite.Dao_Class_And_Interface;
 
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
+import org.springframework.web.servlet.ModelAndView;
 
 import ecommercewebsite.Models.Admin_Model;
 import ecommercewebsite.Models.Brands_Model;
@@ -59,11 +59,20 @@ public class EDao implements eCommerce_Interface
 		boolean b=false;
 		Session s=sf.openSession();
 		Transaction t=s.beginTransaction();
-		Object obj=s.save(c);
+		Object obj=null;
+		try
+		{
+		obj=s.save(c);
 		t.commit();
 		if(obj!=null)
 		{
 			b=true;
+		}
+		}
+		catch (Exception e) 
+		{
+			ModelAndView mav=new ModelAndView("AdminWelcomepage");
+			mav.addObject("msg","Category Already Exists.");
 		}
 		s.close();
 		return b;
@@ -73,12 +82,22 @@ public class EDao implements eCommerce_Interface
 		boolean b=false;
 		Session s=sf.openSession();
 		Transaction t=s.beginTransaction();
-		Object obj=s.save(bm);
+		Object obj=null;
+		try
+		{
+		obj=s.save(bm);
 		t.commit();
 		if(obj!=null)
 		{
 			b=true;
 		}
+		}
+		catch (Exception e)
+		{
+			ModelAndView mav=new ModelAndView("AdminWelcomepage");
+			mav.addObject("msg","Brand Already Exists.");
+		}
+		
 		s.close();
 		return b;
 	}
@@ -250,11 +269,11 @@ public class EDao implements eCommerce_Interface
 		Session s=sf.openSession();
 		if(sortingType.equals("lowtohigh"))
 		{
-		   al=(ArrayList<Product_Model>) s.createQuery("from Product_Model where productName like '%"+p.getProductName()+"%' or brand like '%"+p.getBrand()+"%' order by price").list();
+		   al=(ArrayList<Product_Model>) s.createQuery("from Product_Model where productName like '%"+p.getProductName()+"%' or brand like '%"+p.getBrand()+"%' or catagory like '%"+p.getCatagory()+"%' order by price").list();
 		}
 		else
 		{
-		   al=(ArrayList<Product_Model>) s.createQuery("from Product_Model where productName like '%"+p.getProductName()+"%' or brand like '%"+p.getBrand()+"%' order by price desc").list();
+		   al=(ArrayList<Product_Model>) s.createQuery("from Product_Model where productName like '%"+p.getProductName()+"%' or brand like '%"+p.getBrand()+"%' or catagory like '%"+p.getCatagory()+"%' order by price desc").list();
 		}
 		s.close();
 		return al;
@@ -768,5 +787,13 @@ public class EDao implements eCommerce_Interface
 		al=(ArrayList<MyOrders_Model>)s.createQuery("from MyOrders_Model order by orderdate desc").list();
 		s.close();
 		return al;
+	}
+	public ArrayList<Product_Model> getProductsOfCategory(Catagory_Model c)
+	{
+		ArrayList<Product_Model> products=new ArrayList<Product_Model>();
+		Session s=sf.openSession();
+		products=(ArrayList<Product_Model>)s.createQuery("from Product_Model where catagory='"+c.getCatagory()+"'").list();
+		s.close();
+		return products;
 	}
 }

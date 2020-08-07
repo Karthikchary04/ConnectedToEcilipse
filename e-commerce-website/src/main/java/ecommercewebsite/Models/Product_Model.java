@@ -3,6 +3,7 @@ package ecommercewebsite.Models;
 import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import org.hibernate.annotations.Cache;
@@ -16,10 +17,16 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 public class Product_Model 
 {
    @Id
-   @GeneratedValue
+   @GeneratedValue(strategy = GenerationType.SEQUENCE)
    private int pid;
-   private String productname,brand,catagory,image,info;
-   private int stock,sold,price;
+   private String productname,brand,catagory,image,info,type;
+   public String getType() {
+	return type;
+}
+public void setType(String type) {
+	this.type = type;
+}
+private int stock,sold,price;
 public int getPid() {
 	return pid;
 }
